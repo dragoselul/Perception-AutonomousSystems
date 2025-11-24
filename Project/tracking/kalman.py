@@ -46,7 +46,9 @@ class KalmanFilter:
 
 
 
-
+# will have a list of KalmanFilter objects, one for each tracked object
+# if a new object is detected,  will create a new KalmanFilter instance for it
+# if an object is lost, will remove its KalmanFilter instance
 
 
     
