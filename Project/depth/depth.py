@@ -62,7 +62,7 @@ def get_box_centers_with_disparity(img_left, img_right):
 
     # --- 2. Configure the StereoBM block matcher ---
     min_disp = 0
-    num_disp = 9 * 16        # must be divisible by 16
+    num_disp = 5 * 16        # must be divisible by 16
     block_size = 15
 
     stereo = cv2.StereoBM_create(numDisparities=num_disp, blockSize=block_size)
@@ -77,7 +77,8 @@ def get_box_centers_with_disparity(img_left, img_right):
 
     # --- 4. Extract center coordinates and disparity values ---
     results_list = []   # List of tuples: (cx, cy, disparity)
-
+    f = 700.0        # fokalna dužina u pikselima
+    B = 0.10         # baseline u metrima (10 cm)
     for box in r.boxes.xyxy:
         x1, y1, x2, y2 = box.tolist()
 
@@ -87,7 +88,7 @@ def get_box_centers_with_disparity(img_left, img_right):
 
         # NumPy image indexing uses [row, column] = [y, x]
         disparity_value = disp[cy, cx]
-
-        results_list.append((cx, cy, float(disparity_value)))
+        Z = (f * B) / disparity_value
+        results_list.append((cx, cy, float(Z)))
 
     return results_list
