@@ -7,6 +7,8 @@ import time
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 print(PROJECT_ROOT)
 
+CLASSES_OF_INTEREST = ['pedestrian', 'cyclist', 'car']
+
 
 def load_model(model_path):
     """ 
@@ -38,7 +40,20 @@ def predict(images, model, confidence_threshold=0.6, device='cpu'):
         imgsz=640, device=device, verbose=False,
     )
     
-    return results
+    # Filter results to include only classes of interest
+    results_filtered = []
+    for result in results:
+        boxes = result.boxes
+        if boxes is not None and hasattr(boxes, "cls"):
+            cls_ids = boxes.cls.cpu().numpy()
+            mask = [i for i, cls_id in enumerate(cls_ids) if model.names[int(cls_id)].lower() in CLASSES_OF_INTEREST]
+            if len(mask) > 0:
+                filtered_boxes = boxes[mask]
+                result.boxes = filtered_boxes
+            else:
+                result.boxes = type(boxes)()  # Empty boxes
+        results_filtered.append(result)
+    return results_filtered
 
 
 def plot_predictions(results, image):
