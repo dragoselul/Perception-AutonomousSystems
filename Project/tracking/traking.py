@@ -1,4 +1,5 @@
 from kalman import KalmanFilter
+from depth.depth import get_box_centers_with_disparity
 import math
 import numpy as np
 import scipy.optimize.linear_sum_assignment as linear_assignment
@@ -6,10 +7,6 @@ FRAMES = 10
 MAX_MISSES = 5
 trackers = []
 
-# method returning the center (x,y,z) for each detected object
-def yolo_detect_3d():
-    # hypothetical function to detect objects in 3D
-    return []
 
 # cost matrix base on Euclidean distance to compare the center of detections and predictions
 def calculate_cost_matrix(detections, predictions):
@@ -38,7 +35,7 @@ for i in range(FRAMES): # will have to actually loop over video frames
     for kf in trackers:
         predictions.append(kf.predict())
 
-    objects = yolo_detect_3d()  # hypothetical function to detect objects
+    objects = get_box_centers_with_disparity()  # hypothetical function to detect objects
     detections = [obj.position for obj in objects]
 
     # calculate cost matrix and perform association between detections and predictions
