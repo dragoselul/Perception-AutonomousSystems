@@ -26,11 +26,13 @@ class KalmanFilter:
 
         self.I = np.identity(6)
 
+        self.undetected_count = 0
+
     def predict(self):
         self.x = np.dot(self.F, self.x) + self.u
         # Covariance Prediction
         self.P = np.dot(np.dot(self.F, self.P), np.transpose(self.F)) + self.Q
-
+        return self.x[0:3]
 
     def update(self, Z):
         self.y = Z - np.dot(self.H, self.x)
