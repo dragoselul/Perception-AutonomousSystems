@@ -42,7 +42,7 @@ class YoloLightning(pl.LightningModule):
         super().__init__()
         
         # Initialize the YOLOv5 model from torchvision
-        model = torch.hub.load(
+        self.model = torch.hub.load(
             'ultralytics/yolov5', 'yolov5s', 
             pretrained=pretrained)
         
@@ -51,7 +51,7 @@ class YoloLightning(pl.LightningModule):
         
         
     def _shared_step(self, batch, stage='train'):
-        imgs, targets = batch          # adjust if your dataloader is different
+        imgs, targets = batch 
 
         # Forward pass: YOLOv5 returns predictions as list of tensors
         preds = self.model(imgs)
