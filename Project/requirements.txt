@@ -1,0 +1,6 @@
+# Requirements for Stereo Calibration and Rectification
+# Install with: pip install -r requirements.txt
+
+opencv-python>=4.5.0
+numpy>=1.19.0
+
