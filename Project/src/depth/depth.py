@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 from ultralytics import YOLO
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 print(PROJECT_ROOT)
 
 def predict(images, model, confidence_threshold=0.6, device='cpu'):
@@ -90,4 +90,4 @@ def get_box_centers_with_disparity(img_left, img_right):
 
         results_list.append((cx, cy, float(disparity_value)))
 
-    return results_list
+    return results_list, r
