@@ -338,7 +338,7 @@ def compute_and_print_metrics(stats, overall, iou_threshold, confidence_threshol
 
 def evaluate_model_on_sequence(
     sequence_path, labels_by_frame, model,
-    confidence_threshold=0.6, iou_threshold=0.5, device='cpu'):
+    confidence_threshold=0.6, iou_threshold=0.5, device='cpu', save_path=None):
     """
     Run evaluation of the model on a sequence of images.
     :param sequence_path: Path to the sequence directory
@@ -390,7 +390,9 @@ def evaluate_model_on_sequence(
         stats, overall = update_stats(stats, overall, matched, unmatched_gt_classes)
 
     # Final metrics
-    compute_and_print_metrics(stats, overall, iou_threshold, confidence_threshold)
+    compute_and_print_metrics(stats, overall, iou_threshold, confidence_threshold, save_path=save_path)
+    
+    
 
 
 if __name__ == '__main__':
@@ -398,19 +400,22 @@ if __name__ == '__main__':
     sequence_1_path = PROJECT_ROOT / 'data/34759_final_project_rect/seq_01/'        # image 02
     sequence_2_path = PROJECT_ROOT / 'data/34759_final_project_rect/seq_02/'        # image 02
     
+    chosen_sequence = 2
+    
     # Sequences 1 and 2 provide a validation set for the trained model
     # Get all GT labels for frame i
-    labels_by_frame = load_labels(sequence_2_path / 'labels.txt')
+    labels_by_frame = load_labels(sequence_1_path / 'labels.txt') if chosen_sequence == 1 else load_labels(sequence_2_path / 'labels.txt')
    
-    plot_sequence(labels_by_frame, sequence_2_path / 'image_02' / 'data')
+    # plot_sequence(labels_by_frame, sequence_2_path / 'image_02' / 'data')
    
-    # model = load_model(PROJECT_ROOT / 'working_files/weights/best.pt')
+    model = load_model(PROJECT_ROOT / 'working_files/weights/best.pt')
     
-    # evaluate_model_on_sequence(
-    #     sequence_2_path / 'image_02' / 'data',
-    #     labels_by_frame,
-    #     model,
-    #     confidence_threshold=0.5,
-    #     iou_threshold=0.5,
-    #     device='cpu',
-    # )
+    evaluate_model_on_sequence(
+        sequence_2_path / 'image_02' / 'data' if chosen_sequence == 2 else sequence_1_path / 'image_02' / 'data',
+        labels_by_frame,
+        model,
+        confidence_threshold=0.5,
+        iou_threshold=0.5,
+        device='cpu',
+        save_path=PROJECT_ROOT / f'working_files/validation_metrics_sequence_{chosen_sequence}.csv',
+    )
