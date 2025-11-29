@@ -122,7 +122,7 @@ def object_detection_video(video_path, model, confidence_threshold=0.6):
 
 
 if __name__ == "__main__":
-    model = load_model(PROJECT_ROOT / 'working_files/weights/best.pt')
+    model = load_model(PROJECT_ROOT / 'working_files/weights/best_finetune.pt')
     video_path = PROJECT_ROOT / 'data/34759_final_project_rect/seq_02/image_03/data'
     object_detection_video(video_path, model, confidence_threshold=0.6)
     
