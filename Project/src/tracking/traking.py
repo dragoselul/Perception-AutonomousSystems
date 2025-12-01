@@ -7,7 +7,8 @@ import numpy as np
 import cv2
 
 from .kalman import KalmanFilter
-from ..depth.depth import get_box_centers_with_disparity, load_model
+from ..depth.depth import get_box_centers_with_disparity
+from ..object_detection.detection_inference import load_model
 
 def get_class_name_from_bbox(bboxes, detection_idx):
    
@@ -217,8 +218,8 @@ if __name__ == "__main__":
 
     yolo_model = model = load_model(PROJECT_ROOT / 'working_files/weights/best.pt')
 
-    video_left_path = PROJECT_ROOT / 'datasets' / '34759_final_project_rect' / 'seq_03' / 'image_02' / 'data'
-    video_right_path = PROJECT_ROOT / 'datasets' / '34759_final_project_rect' / 'seq_03' / 'image_03' / 'data'
+    video_left_path = PROJECT_ROOT / 'datasets' / '34759_final_project_rect' / 'seq_02' / 'image_02' / 'data'
+    video_right_path = PROJECT_ROOT / 'datasets' / '34759_final_project_rect' / 'seq_02' / 'image_03' / 'data'
 
     MAX_MISSES = {
         "Pedestrian": 50,  # maximum number of consecutive misses before deleting a tracker

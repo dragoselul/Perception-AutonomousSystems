@@ -2,3 +2,4 @@
 .idea
 *.gif
 34759_final_project*
+__pycache__/
