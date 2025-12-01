@@ -39,7 +39,7 @@ def load_model(model_path):
         return None
 
 
-def get_box_centers_with_disparity(img_left, img_right):
+def get_box_centers_with_disparity(img_left, img_right, model):
     """
     Computes the disparity map from a stereo pair and returns a list of tuples (cx, cy, disparity)
     for each bounding box detected by the YOLO model.
@@ -53,7 +53,7 @@ def get_box_centers_with_disparity(img_left, img_right):
         list of (int, int, float): A list of tuples where each tuple contains:
                                    (center_x, center_y, disparity_value).
     """
-    model = load_model(PROJECT_ROOT / 'working_files/weights/best.pt')
+    
     results=predict(img_left,model)
     r = results[0]
     # --- 1. Convert both images to grayscale for StereoBM ---
@@ -79,6 +79,11 @@ def get_box_centers_with_disparity(img_left, img_right):
     results_list = []   # List of tuples: (cx, cy, disparity)
     f = 700.0        # fokalna dužina u pikselima
     B = 0.10         # baseline u metrima (10 cm)
+    f_x = f          # Focal length x
+    f_y = f          # Focal length y
+    c_x = img_left.shape[1] / 2 # Principal point x (approx)
+    c_y = img_left.shape[0] / 2 # Principal point y (approx)
+
     for box in r.boxes.xyxy:
         x1, y1, x2, y2 = box.tolist()
 
@@ -89,6 +94,13 @@ def get_box_centers_with_disparity(img_left, img_right):
         # NumPy image indexing uses [row, column] = [y, x]
         disparity_value = disp[cy, cx]
         Z = (f * B) / disparity_value
-        results_list.append((cx, cy, float(Z)))
+        # Inverse Projection (Pixels -> Camera Coordinates)
+        X = Z * (cx - c_x) / f_x         # X in meters
+        Y = Z * (cy - c_y) / f_y         # Y in meters
+
+        if not np.isfinite(X) or not np.isfinite(Y) or not np.isfinite(Z) or Z <= 0 or Z > 15.0:
+            continue
+
+        results_list.append(( X, Y, Z))
 
     return results_list, r
