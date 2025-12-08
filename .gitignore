@@ -3,3 +3,5 @@
 *.gif
 34759_final_project*
 __pycache__/
+*.npy
+*.ply
